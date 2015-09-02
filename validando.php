@@ -60,7 +60,7 @@ if (isset($_REQUEST['us']) || isset($_REQUEST['pas'])) {
 				</script>";
 				echo '
 						<div>
-							<form action="newfile.php" method="post">
+							<form action="validando.php" method="post">
 								<div>
 									Agregar nuevo usuario
 								</div>
@@ -88,8 +88,87 @@ if (isset($_REQUEST['us']) || isset($_REQUEST['pas'])) {
 					';
 				}
 			}elseif ($_REQUEST["buscarUS"]==2){
-				
-			}elseif ($_REQUEST["eliminarUS"]==3){
+				if (isset($_REQUEST["idus"])) {
+					$id_buscado=$_REQUEST["idus"];
+					$mysqli = new mysqli($_SERVER["host"], $_SERVER["user"], $_SERVER["pass"], $_SERVER["dbh"]);
+					if (!$mysqli->multi_query("SET @p1='$id_buscado'; CALL busquedaiu(@p1);")) {
+						echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+					}
+					/*Ahora con este bucle recogemos los resultados y los recorremos*/
+					do {
+						/*En el if recogemos una fila de la tabla*/
+						if ($res = $mysqli->store_result()) {
+							/*Imprimimos el resultado de la fila y debajo un salto de línea*/
+							$data=$res->fetch_all();
+							//$id_usuario=$data[0][0];//obtiene el ID del usuario
+							//imprime los datos del usuario
+							echo '
+							<div>
+								<div>
+									ID
+								</div>
+								<div>
+									'.$data[0][0].'
+								<div>
+							</div>
+							<div>
+								<div>
+									Nombre
+								</div>
+								<div>
+									'.$data[0][1].'
+								<div>
+							</div>
+							<div>
+								<div>
+									Contrasena
+								</div>
+								<div>
+									'.$data[0][2].'
+								<div>
+							</div>
+							<div>
+								<form action="validando.php" method="post">
+									<div>
+										<input type="hidden" name="us" value='.$usuario.'>
+										<input type="hidden" name="pas" value='.$contrasena.'>
+										<input type="hidden" name="eliminar" value="eliminar">
+										<input type="submit" value="Eliminar Usuario"/>
+									</div>
+								</form>
+							</div>
+							';
+							/*La llamada a free() no es obligatoria, pero si recomendable para aligerar memoria y para evitar problemas si después hacemos una llamada a otro procedimiento*/
+							$res->free();
+						} else {
+							if ($mysqli->errno) {
+								echo "Store failed: (" . $mysqli->errno . ") " . $mysqli->error;
+							}
+						}
+					} while ($mysqli->more_results() && $mysqli->next_result());
+				}else{
+					//formulario para buscar un usuario en la db
+					echo '
+						<div>
+							<form action="validando.php" method="post">
+								<div>
+									<div>
+										ID
+									</div>
+									<div>
+										<input id="idus" type="text"/>
+									</div>
+								</div>
+								<div>
+									<input type="hidden" name="us" value='.$usuario.'>
+									<input type="hidden" name="pas" value='.$contrasena.'>
+									<input type="submit" value="Buscar"/>
+								</div>
+							</form>
+						</div>
+					';
+				}
+			}elseif ($_REQUEST["explorarUS"]==3){
 				
 			}else{
 				echo 'Ha ocurrido un error!!!';
@@ -118,7 +197,7 @@ if (isset($_REQUEST['us']) || isset($_REQUEST['pas'])) {
 					  				<input type="hidden" name="us" value='.$usuario.'>
 									<input type="hidden" name="pas" value='.$contrasena.'>
 									<input type="hidden" name="buscarUS" value="2">
-									<input type="submit" value="Buscar usuario">
+									<input type="submit" value="Buscar usuario por id">
 								</div>
 							</form>
 						</div>
@@ -128,7 +207,7 @@ if (isset($_REQUEST['us']) || isset($_REQUEST['pas'])) {
 					  				<input type="hidden" name="us" value='.$usuario.'>
 									<input type="hidden" name="pas" value='.$contrasena.'>
 									<input type="hidden" name="eliminarUS" value="3">
-									<input type="submit" value="Eliminar usuario">
+									<input type="submit" value="Explorar usuarios">
 								</div>
 							</form>
 						</div>
