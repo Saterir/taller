@@ -1,0 +1,25 @@
+user=root;
+pass=8228.syx;
+file=`date +"%Y%m%d"`.sql;
+mysqldump -u$user -p$pass banco > /home/tomas/backup/$file
+checksum1=$(mysql -u$user -p$pass <<EOF |
+CHECKSUM TABLE banco.usuario
+EOF
+tail -n 1 | awk '{ print $2 }')
+
+mysql -u$user -p$pass USE bancobackup 
+DROP TABLE usuarios; 
+DROP TABLE transacciones;
+mysql -u $user -p $pass bancobackup < $file
+checksum2=$(mysql -u$user -p$pass <<EOF |
+CHECKSUM TABLE bancobackup.usuario
+EOF
+tail -n 1 | awk '{ print $2 }')
+
+if [$checksum1 = $checksum2]
+then
+	echo "Backup exitoso!";
+else
+	echo "Error al realizar el Backup";
+fi
+ 
