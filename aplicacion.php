@@ -5,19 +5,20 @@
 //3 si es admin aparece un boton en menu para el cpanel, de lo contrario no se activa
 
 require_once 'clases.php';
-
-if (isset($_SESSION['usuario'])==false && isset($_SESSION['contrasena'])==false) {
-	session_start();
-	$_SESSION['usuario']=$_REQUEST['us'];
-	$_SESSION['contrasena']=$_REQUEST['pas'];
+session_start();
+if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false) {
+	if (empty($_REQUEST['us'])==true || empty($_REQUEST['pas'])==true) {
+		exit();
+	}else {
+		//$_SESSION['usuario']=$_REQUEST['us'];
+		//$_SESSION['contrasena']=$_REQUEST['pas'];
+		$_SESSION['usuario']="nico";
+		$_SESSION['contrasena']="1234";
+	}
 }
 
-
-if (empty($_REQUEST['us'])==false && empty($_REQUEST['pas'])==false) {
-	$usuario = "nico";
-	$contrasena = "1234";
-	//$usuario = $_SESSION['usuario']
-	//$contrasena = $_SESSION['contrasena']
+	$usuario = $_SESSION['usuario'];
+	$contrasena = $_SESSION['contrasena'];
 	$mysqli = new mysqli($_SERVER["host"], $_SERVER["user"], $_SERVER["pass"], $_SERVER["dbh"]);
 	if (!$mysqli->multi_query("SET @p1='$usuario'; SET @p2='$contrasena'; CALL validando(@p1,@p2);")) {
     	echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
@@ -46,13 +47,34 @@ if (empty($_REQUEST['us'])==false && empty($_REQUEST['pas'])==false) {
 		$admin="1";
 		$app="1";
 		echo $aplicacion->menu($admin, $app);
+		
+		if ($admin='1') {//verifica si es administrador
+			if (isset($_REQUEST['cpanel'])) {
+				if ($_REQUEST['cpanel']=='1e') {
+					$_SESSION['eleccion']='1';
+					echo $aplicacion->cpanel();//muestra el cpanel
+				}else{
+					echo 'OPCION NO VALIDA PARA ESTE USUARIO';
+				}
+			}elseif (isset($_REQUEST['config'])) {
+				$_SESSION['eleccion']='2';
+				echo $aplicacion->configuracion();//muestra el contenido del boton configuracion
+			}elseif (isset($_REQUEST['app']) || $_SESSION['eleccion']=='3') {
+				$_SESSION['eleccion']='3';
+				echo $aplicacion->texteo();//muestra la aplicacion de texting
+			}
+		}else {//el caso que el usuario no sea administrador
+			if (isset($_REQUEST['config'])) {
+				$_SESSION['eleccion']='1';
+				echo $aplicacion->configuracion();//muestra el contenido del boton configuracion
+			}elseif (isset($_REQUEST['app']) || $_SESSION['eleccion']=='2') {
+				$_SESSION['eleccion']='2';
+				echo $aplicacion->texteo();//muestra la aplicacion de texting
+			}
+		}
 	}else{
 		//el codigo en esta sección se ejecuta solo si el usuario no se encuentra en la db.
 		session_destroy();
 		echo '<center>algo salio mal<br><a href="home1.php">volver</a></center>';
 	}
-}else {
-	//el codigo en esta seccion se ejecuta solo si no se a ingresado usuario o contraseña
-	session_destroy();
-	echo '<center>algo salio mal<br><a href="home1.php">volver</a></center>';
-}
+

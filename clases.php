@@ -29,7 +29,7 @@ class constructor {
 					<div>
 						<form action="aplicacion.php" method="post">
 							<div>
-								<input type="hidden" name="cpanel" value="1"/>
+								<input type="hidden" name="cpanel" value="1e"/>
 								<input type="submit" value="Cpanel" style="width:120px; position:relative; top:10px;"/>
 							</div>
 						</form>
@@ -47,14 +47,6 @@ class constructor {
 							<div>
 								<input type="hidden" name="app" value="1"/>
 								<input type="submit" value="Aplicacion" style="width:120px; position:relative; top:30px;"/>
-							</div>
-						</form>
-					</div>
-					<div>
-						<form action="aplicacion.php" method="post">
-							<div>
-								<input type="hidden" name="menu" value="1"/>
-								<input type="submit" value="Menu" style="width:120px; position:relative; top:40px;"/>
 							</div>
 						</form>
 					</div>
@@ -80,16 +72,96 @@ class constructor {
 							</div>
 						</form>
 					</div>
+				</div>
+				';
+		}
+	}
+	/**
+	 * esta funcion se encargara de crear el contenido en el cpanel
+	 */
+	function cpanel() {
+		echo '
+			<div style="position: relative; left:150px; top:-500px;">
+				<div>
+					Menu del CPANEL
+				</div>
+				<div>
+					<form action="aplicacion.php" method="post">
+						<input type="hidden" name="eliminarUS" value="1"/>
+						<input type="submit" value="Eliminar Usuario"/>
+					</form>
+				</div>
+				<div>
+					<form action="aplicacion.php" method="post">
+						<input type="hidden" name="crearUS" value="1"/>
+						<input type="submit" value="Crear Usuario"/>
+					</form>
+				</div>
+				<div>
+					<form action="aplicacion.php" method="post">
+						<input type="hidden" name="editarUS" value="1"/>
+						<input type="submit" value="Editar Usuario"/>
+					</form>
+				</div>
+				<div>
+					<form action="aplicacion.php" method="post">
+						<input type="hidden" name="eliminarTA" value="1"/>
+						<input type="submit" value="Eliminar Tabla"/>
+					</form>
+				</div>
+				<div>
+					<form action="aplicacion.php" method="post">
+						<input type="hidden" name="crearTA" value="1"/>
+						<input type="submit" value="Crear Tabla"/>
+					</form>
+				</div>
+				<div>
+					<form action="aplicacion.php" method="post">
+						<input type="hidden" name="editarTA" value="1"/>
+						<input type="submit" value="Editar Tabla"/>
+					</form>
+				</div>
+			</div>
+			';
+	}
+	/**
+	 * Funcion que se en carga de generar el contenido cuando se presiona el boton configurar
+	 */
+	function configuracion() {
+		echo'
+				<div style="position: relative; left:150px; top:-500px;">
+					<div>
+						Menu de Configuracion
+					</div>
 					<div>
 						<form action="aplicacion.php" method="post">
-							<div>
-								<input type="hidden" name="menu" value="1"/>
-								<input type="submit" value="Menu" style="width:120px; position:relative; top:30px;"/>
-							</div>
+							<input type="hidden" name="editarCO" value="1"/>
+							<input type="submit" value="Editar Contrasena"/>
 						</form>
 					</div>
 				</div>
 				';
-		}
+	}
+	/**
+	 * Esta aplicacion crea un chat, en el cual el usuario puede enviar y recivir mensajes
+	 */
+	function texteo() {
+		echo'
+				<div style="position: relative; left:150px; top:-500px;">
+					<div>
+						Aplicacion de mensajeria chat
+					</div>
+					<div Style="width:300px; height:400px; border:1px solid black; overflow-y:auto;">
+						//aqui va el contenido que envian todos los demas usuarios :P
+					</div>
+					<div>
+						<form action="aplicacion.php" method="post">
+							<input type="text" name="texto" style="width:300px; border:1px solid black;"/>
+							<input type="submit" value="Enviar"/>
+						</form>
+					<div>
+				</div>
+				';
+		
 	}
 }
