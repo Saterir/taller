@@ -3,16 +3,18 @@ if (isset($_REQUEST["usuario"]) && $_REQUEST["pas"]) {
 	$usuario=$_REQUEST["us"];
 	$contrasena=$_REQUEST["pas"];
 	echo $contrasena;
-	//$mysqli = new mysqli($_SERVER["host"], $_SERVER["user"], $_SERVER["pass"], $_SERVER["dbh"]);
-	//if (!$mysqli->multi_query("SET @p1='$usuario'; SET @p2='$contrasena'; CALL insertarusuario(@p1,@p2);")) {
-		//echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
-	//}else{
-		//echo '
-			//El usuario ha sido registrado correctamente.
-			//<br>
-			//<a href="newfile.php">volver</a>
-			//';
-	    //}
+	$mysqli = new mysqli($_SERVER["host"], $_SERVER["user"], $_SERVER["pass"], $_SERVER["dbh"]);
+	if (!$mysqli->multi_query("SET @p1='$usuario'; SET @p2='$contrasena'; 
+				SET @p3='1'; SET @p4='1'; SET @p5='';
+				CALL crear_usuario(@p1,@p2,@p3,@p4,@p5);")) {
+		echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+	}else{
+		echo '
+			El usuario ha sido registrado correctamente.
+			<br>
+			<a href="newfile.php">volver</a>
+			';
+	    }
 	
 	
 }else{
