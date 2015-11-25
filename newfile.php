@@ -1,6 +1,6 @@
 <?php
 if (isset($_REQUEST["usuario"]) && $_REQUEST["pas"]) {
-	$usuario=$_REQUEST["us"];
+	$usuario=$_REQUEST["usuario"];
 	$contrasena=$_REQUEST["pas"];
 	echo $contrasena;
 	$mysqli = new mysqli($_SERVER["host"], $_SERVER["user"], $_SERVER["pass"], $_SERVER["dbh"]);
