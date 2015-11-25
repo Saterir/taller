@@ -63,6 +63,7 @@ if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false)
 			}elseif (isset($_REQUEST['app']) || $_SESSION['irApp']=='1') {
 				$_SESSION['eleccion']='3';
 				$_SESSION['irApp']='0';
+				//insertar PA
 				echo $aplicacion->texteo();//muestra la aplicacion de texting
 			}elseif ($_SESSION['eleccion']=='1' && $_REQUEST['eliminarUS']=='1'){
 				//entra en este if, si el usuario hizo click en eliminar usuario dentro de cplanel
@@ -241,7 +242,7 @@ if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false)
 					}
 				} while ($mysqli->more_results() && $mysqli->next_result());
 				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
-				$_SESSION['irApp']='1';
+				$_SESSION['irApp']='1';//esta variable nos permite retornan a la aplicacion
 				//hay que refrescar la pagina
 				header("Refresh:0");
 			}
@@ -280,6 +281,30 @@ if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false)
 				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
 				//reseteando variable
 				$_SESSION['editarCO']='0';
+			}elseif ($_SESSION['eleccion']=='3' && isset($_REQUEST['texto'])){//mandar la informacion que el usuario desea compartir con los demas
+				$texto_usuario=$_REQUEST['texto'];
+				//ejecuta PA, para subir lo enviado a la base de datos
+				if (!$mysqli->multi_query("SET @p1='$texto_usuario'; SET @p2='$id_usuario';
+						CALL texto(@p1,@p2);")) {
+						echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
+				/*Ahora con este bucle recogemos los resultados y los recorremos*/
+				do {
+					/*En el if recogemos una fila de la tabla*/
+					if ($res = $mysqli->store_result()) {
+						/*Imprimimos el resultado de la fila y debajo un salto de línea*/
+						$data=$res->fetch_all();
+						$res->free();
+					} else {
+						if ($mysqli->errno) {
+							echo "Store failed: (" . $mysqli->errno . ") " . $mysqli->error;
+						}
+					}
+				} while ($mysqli->more_results() && $mysqli->next_result());
+				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
+				$_SESSION['irApp']='1';//esta variable nos permite retornan a la aplicacion
+				//hay que refrescar la pagina
+				header("Refresh:0");
 			}
 		}
 	}else{
