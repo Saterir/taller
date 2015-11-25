@@ -286,4 +286,41 @@ class constructor {
 				</div>
 				";
 	}
+	
+	/**
+	 * Esta fincion permite crear el formulario de cambio de contraseña
+	 */
+	function formulario_cambio_contrasena() {
+		echo "
+		<!DOCTYPE html>
+		<script src='http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha256.js'></script>
+		<script>
+		function send(){
+		var contrasena = '';
+		
+		contrasena = CryptoJS.SHA256(document.getElementById('cc').value);
+		
+		document.getElementById('cc2').setAttribute('value', contrasena);
+		}
+		</script>";
+		
+		echo"
+			<div style='position: relative; left:150px; top:-500px;'>
+				<div>
+					Cambiar Contrasena
+				</div>
+				<div>
+					<form action='aplicacion.php' method='post'>
+						<div>
+							<input id='cc' type='text'/>
+						</div>
+						<div>
+							<input id='cc2' type='hidden' name='nuevaContrasenaDelUsuario'/>
+							<input type='submit' onclick='send()' value='Cambiar Contrasena'/>
+						</div>
+					</form>
+				<div>
+			</div>
+			";
+	}
 }

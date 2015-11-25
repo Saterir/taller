@@ -60,8 +60,9 @@ if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false)
 			}elseif (isset($_REQUEST['config'])) {
 				$_SESSION['eleccion']='2';
 				echo $aplicacion->configuracion();//muestra el contenido del boton configuracion
-			}elseif (isset($_REQUEST['app']) || $_SESSION['eleccion']=='3') {
+			}elseif (isset($_REQUEST['app']) || $_SESSION['irApp']=='1') {
 				$_SESSION['eleccion']='3';
+				$_SESSION['irApp']='0';
 				echo $aplicacion->texteo();//muestra la aplicacion de texting
 			}elseif ($_SESSION['eleccion']=='1' && $_REQUEST['eliminarUS']=='1'){
 				//entra en este if, si el usuario hizo click en eliminar usuario dentro de cplanel
@@ -192,14 +193,93 @@ if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false)
 				//deja los status en 0
 				$_SESSION['editarUS']='0';
 				$_SESSION['editarUsuario']='0';
+			}elseif ($_SESSION['eleccion']=='2' && $_REQUEST['editarCO']=='1'){ //despliega menu para editar contraseña en el item configuracion
+				$_SESSION['editarCO']='1';
+				//despliega el menu para cambiar contraseña
+				echo $aplicacion->formulario_cambio_contrasena();
+			}elseif ($_SESSION['eleccion']=='2' && $_SESSION['editarCO']=='1' && isset($_REQUEST['nuevaContrasenaDelUsuario'])){
+				//insertar PA para cambio de contraseña
+				$nueva_contrasena_del_usuario=$_REQUEST['nuevaContrasenaDelUsuario'];
+				if (!$mysqli->multi_query("SET @p1='$id_usuario'; SET @p2='$nueva_contrasena_del_usuario'; SET @p3='';
+						CALL editar_contraseña(@p1,@p2,@p3);")) {
+						echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
+				/*Ahora con este bucle recogemos los resultados y los recorremos*/
+				do {
+					/*En el if recogemos una fila de la tabla*/
+					if ($res = $mysqli->store_result()) {
+						/*Imprimimos el resultado de la fila y debajo un salto de línea*/
+						$data=$res->fetch_all();
+						$res->free();
+					} else {
+						if ($mysqli->errno) {
+							echo "Store failed: (" . $mysqli->errno . ") " . $mysqli->error;
+						}
+					}
+				} while ($mysqli->more_results() && $mysqli->next_result());
+				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
+				//reseteando variable
+				$_SESSION['editarCO']='0';
+			}elseif ($_SESSION['eleccion']=='3' && isset($_REQUEST['texto'])){//mandar la informacion que el usuario desea compartir con los demas
+				$texto_usuario=$_REQUEST['texto'];
+				//ejecuta PA, para subir lo enviado a la base de datos
+				if (!$mysqli->multi_query("SET @p1='$texto_usuario'; SET @p2='$id_usuario';
+						CALL texto(@p1,@p2);")) {
+						echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
+				/*Ahora con este bucle recogemos los resultados y los recorremos*/
+				do {
+					/*En el if recogemos una fila de la tabla*/
+					if ($res = $mysqli->store_result()) {
+						/*Imprimimos el resultado de la fila y debajo un salto de línea*/
+						$data=$res->fetch_all();
+						$res->free();
+					} else {
+						if ($mysqli->errno) {
+							echo "Store failed: (" . $mysqli->errno . ") " . $mysqli->error;
+						}
+					}
+				} while ($mysqli->more_results() && $mysqli->next_result());
+				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
+				$_SESSION['irApp']='1';
+				//hay que refrescar la pagina
+				header("Refresh:0");
 			}
 		}else {//el caso que el usuario no sea administrador
 			if (isset($_REQUEST['config'])) {
 				$_SESSION['eleccion']='2';
 				echo $aplicacion->configuracion();//muestra el contenido del boton configuracion
-			}elseif (isset($_REQUEST['app']) || $_SESSION['eleccion']=='3') {
+			}elseif (isset($_REQUEST['app']) || $_SESSION['irApp']=='1') {
 				$_SESSION['eleccion']='3';
+				$_SESSION['irApp']='0';
 				echo $aplicacion->texteo();//muestra la aplicacion de texting
+			}elseif ($_SESSION['eleccion']=='2' && $_REQUEST['editarCO']=='1'){ //despliega menu para editar contraseña en el item configuracion
+				$_SESSION['editarCO']='1';
+				//despliega el menu para cambiar contraseña
+				echo $aplicacion->formulario_cambio_contrasena();
+			}elseif ($_SESSION['eleccion']=='2' && $_SESSION['editarCO']=='1' && isset($_REQUEST['nuevaContrasenaDelUsuario'])){
+				//insertar PA para cambio de contraseña
+				$nueva_contrasena_del_usuario=$_REQUEST['nuevaContrasenaDelUsuario'];
+				if (!$mysqli->multi_query("SET @p1='$id_usuario'; SET @p2='$nueva_contrasena_del_usuario'; SET @p3='';
+						CALL editar_contraseña(@p1,@p2,@p3);")) {
+						echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
+				/*Ahora con este bucle recogemos los resultados y los recorremos*/
+				do {
+					/*En el if recogemos una fila de la tabla*/
+					if ($res = $mysqli->store_result()) {
+						/*Imprimimos el resultado de la fila y debajo un salto de línea*/
+						$data=$res->fetch_all();
+						$res->free();
+					} else {
+						if ($mysqli->errno) {
+							echo "Store failed: (" . $mysqli->errno . ") " . $mysqli->error;
+						}
+					}
+				} while ($mysqli->more_results() && $mysqli->next_result());
+				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
+				//reseteando variable
+				$_SESSION['editarCO']='0';
 			}
 		}
 	}else{
