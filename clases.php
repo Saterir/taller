@@ -127,14 +127,20 @@ class constructor {
 	/**
 	 * Esta aplicacion crea un chat, en el cual el usuario puede enviar y recivir mensajes
 	 */
-	function texteo() {
+	function texteo($datos_texto, $largo) {
 		echo'
 				<div style="position: relative; left:150px; top:-500px;">
 					<div>
 						Aplicacion de mensajeria chat
 					</div>
-					<div Style="width:300px; height:400px; border:1px solid black; overflow-y:auto;">
-						//aqui va el contenido que envian todos los demas usuarios :P
+					<div Style="width:300px; height:400px; border:1px solid black; overflow-y:auto;">';
+					for ($a = ($largo-1); $a > -1; $a--) {
+						echo "<div>";
+							echo $datos_texto[$a][0];
+							//echo $a;
+				 		echo  "</div>";
+					}
+		echo '
 					</div>
 					<div>
 						<form action="aplicacion.php" method="post">

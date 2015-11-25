@@ -63,8 +63,32 @@ if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false)
 			}elseif (isset($_REQUEST['app']) || $_SESSION['irApp']=='1') {
 				$_SESSION['eleccion']='3';
 				$_SESSION['irApp']='0';
-				//insertar PA
-				echo $aplicacion->texteo();//muestra la aplicacion de texting
+				$datos_texto=array();//almacena lo que hay en la base de datos
+				//insertar PA para extraer los mensajes
+				if (!$mysqli->multi_query("CALL ver_chat();")) {
+					echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
+				/*Ahora con este bucle recogemos los resultados y los recorremos*/
+				do {
+					/*En el if recogemos una fila de la tabla*/
+					if ($res = $mysqli->store_result()) {
+						/*Imprimimos el resultado de la fila y debajo un salto de línea*/
+						$data=$res->fetch_all();
+						//var_dump($data);
+						$largo_data=count($data);
+						for ($i = 0; $i < $largo_data; $i++) {
+							$datos_texto[$i]=$data[$i];
+						}
+						$res->free();
+					} else {
+						if ($mysqli->errno) {
+							echo "Store failed: (" . $mysqli->errno . ") " . $mysqli->error;
+						}
+					}
+				} while ($mysqli->more_results() && $mysqli->next_result());
+				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
+				/////////////////////////////////////////////////
+				echo $aplicacion->texteo($datos_texto,$largo_data);//muestra la aplicacion de texting
 			}elseif ($_SESSION['eleccion']=='1' && $_REQUEST['eliminarUS']=='1'){
 				//entra en este if, si el usuario hizo click en eliminar usuario dentro de cplanel
 				$_SESSION['eliminarUS']='1'; 
@@ -253,7 +277,32 @@ if (isset($_SESSION['usuario'])==false || isset($_SESSION['contrasena'])==false)
 			}elseif (isset($_REQUEST['app']) || $_SESSION['irApp']=='1') {
 				$_SESSION['eleccion']='3';
 				$_SESSION['irApp']='0';
-				echo $aplicacion->texteo();//muestra la aplicacion de texting
+				$datos_texto=array();//almacena lo que hay en la base de datos
+				//insertar PA para extraer los mensajes
+				if (!$mysqli->multi_query("CALL ver_chat();")) {
+					echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+				}
+				/*Ahora con este bucle recogemos los resultados y los recorremos*/
+				do {
+					/*En el if recogemos una fila de la tabla*/
+					if ($res = $mysqli->store_result()) {
+						/*Imprimimos el resultado de la fila y debajo un salto de línea*/
+						$data=$res->fetch_all();
+						//var_dump($data);
+						$largo_data=count($data);
+						for ($i = 0; $i < $largo_data; $i++) {
+							$datos_texto[$i]=$data[$i];
+						}
+						$res->free();
+					} else {
+						if ($mysqli->errno) {
+							echo "Store failed: (" . $mysqli->errno . ") " . $mysqli->error;
+						}
+					}
+				} while ($mysqli->more_results() && $mysqli->next_result());
+				/*El bucle se ejecuta mientras haya más resultados y se pueda saltar al siguiente*/
+				/////////////////////////////////////////////////
+				echo $aplicacion->texteo($datos_texto,$largo_data);//muestra la aplicacion de texting
 			}elseif ($_SESSION['eleccion']=='2' && $_REQUEST['editarCO']=='1'){ //despliega menu para editar contraseña en el item configuracion
 				$_SESSION['editarCO']='1';
 				//despliega el menu para cambiar contraseña
