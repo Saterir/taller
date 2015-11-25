@@ -1,18 +1,18 @@
 <?php
-if (isset($_REQUEST["us"]) && $_REQUEST["pas"]) {
+if (isset($_REQUEST["usuario"]) && $_REQUEST["pas"]) {
 	$usuario=$_REQUEST["us"];
 	$contrasena=$_REQUEST["pas"];
-	
-	$mysqli = new mysqli($_SERVER["host"], $_SERVER["user"], $_SERVER["pass"], $_SERVER["dbh"]);
-	if (!$mysqli->multi_query("SET @p1='$usuario'; SET @p2='$contrasena'; CALL insertarusuario(@p1,@p2);")) {
-		echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
-	}else{
-		echo '
-			El usuario ha sido registrado correctamente.
-			<br>
-			<a href="newfile.php">volver</a>
-			';
-	    }
+	echo $contrasena;
+	//$mysqli = new mysqli($_SERVER["host"], $_SERVER["user"], $_SERVER["pass"], $_SERVER["dbh"]);
+	//if (!$mysqli->multi_query("SET @p1='$usuario'; SET @p2='$contrasena'; CALL insertarusuario(@p1,@p2);")) {
+		//echo "Falló la llamada: (" . $mysqli->errno . ") " . $mysqli->error;
+	//}else{
+		//echo '
+			//El usuario ha sido registrado correctamente.
+			//<br>
+			//<a href="newfile.php">volver</a>
+			//';
+	    //}
 	
 	
 }else{
@@ -24,10 +24,9 @@ echo "
 	var usuario = '';
 	var contrasena = '';
 	
-	usuario = CryptoJS.SHA256(document.getElementById('usuario').value);
 	contrasena = CryptoJS.SHA256(document.getElementById('contrasena').value);
 	
-	document.getElementById('us').setAttribute('value', usuario);
+	
 	document.getElementById('pas').setAttribute('value', contrasena);
 	}
 	</script>";
@@ -50,7 +49,6 @@ echo '
 				<input id="contrasena" type="text" name="contrasena"/>
 			</div>
 			<div>
-				<input id="us" type="hidden" name="us">
 				<input id="pas" type="hidden" name="pas">
 				<input type="submit" onclick="send()" value="ingresar"/>
 			</div>
