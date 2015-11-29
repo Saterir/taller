@@ -50,6 +50,14 @@ class constructor {
 							</div>
 						</form>
 					</div>
+					<div>
+						<form action="home1.php" method="post">
+							<div>
+								<input type="hidden" name="cerrar" value="1"/>
+								<input type="submit" value="Cerrar Sesion" style="width:120px; position:relative; top:40px;"/>
+							</div>
+						</form>
+					</div>
 				</div>
 				';
 		}else{//el usuario no es administrador
@@ -69,6 +77,14 @@ class constructor {
 							<div>
 								<input type="hidden" name="app" value="1"/>
 								<input type="submit" value="Aplicacion" style="width:120px; position:relative; top:30px;"/>
+							</div>
+						</form>
+					</div>
+					<div>
+						<form action="home1.php" method="post">
+							<div>
+								<input type="hidden" name="cerrar" value="1"/>
+								<input type="submit" value="Cerrar Sesion" style="width:120px; position:relative; top:40px;"/>
 							</div>
 						</form>
 					</div>

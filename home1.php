@@ -60,6 +60,10 @@ class accseso {
 	</div>";
 	}
 }
+if (isset($_REQUEST['cerrar'])) {
+	session_destroy();
+}
+	
 $form = new accseso;
 $id_contrasena="pass";
 $pagina = "aplicacion.php";
